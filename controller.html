@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en" ng-app="">
+<head>
+    <meta charset="utf-8">
+    <title>My HTML File</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+
+<div ng-controller="MyCtrl">
+	Hello {{name}}!
+	<button ng-click="action()"> OK
+	</button> 
+</div>
+
+<div ng-init="list = ['Chrome', 'Safari', 'Firefox', 'IE'] ">
+	<input ng-model="list" ng-list> <br> 
+	<input ng-model="list" ng-list> <br> 
+	<pre>list={{list}}</pre> <br>
+	<ol>
+		<li ng-repeat="item in list"> {{item}}</li>
+	</ol>
+</div>
+
+<div ng-init="list = ['Chrome', 'Safari', 'Firefox', 'IE'] ">
+	Number formatting: {{ 1234567890 | number:2}} <br> 
+	array filtering<input ng-model="predicate">
+	{{ list | filter:predicate | json }}
+</div>
+<script src="js/angular-1.2.2/angular.min.js"></script>
+
+<script>
+	function MyCtrl($scope) { 
+		$scope.action = function() {
+			$scope.name = 'OK'; 
+		}
+	$scope.name = 'World'; }
+</script>
+</body>
+</html>
