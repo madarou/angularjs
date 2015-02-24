@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="AngularjsWeb"
+  id="myeclipse.1424764670760"
+  context-root="/AngularjsWeb"
+  j2ee-spec="6.0"
+  archive="AngularjsWeb.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+

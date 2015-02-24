@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>My HTML File</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+
+<div ng-app="myApp" ng-controller="firstController">
+	{{name}}
+</div>
+
+<script src="js/angular-1.2.2/angular.min.js"></script>
+
+<script>
+	var myApp = angular.module("myApp",[]);
+
+	//这样写的话，firstController是属于全局ng-app=''的，不是myApp模块的
+	/*function firstController($scope)
+	{
+		$scope.name="张三";
+	}*/
+	myApp.controller("firstController", function($scope){
+		$scope.name="张三";
+	})
+</script>
+</body>
+</html>

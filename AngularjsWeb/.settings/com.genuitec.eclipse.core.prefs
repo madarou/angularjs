@@ -1,0 +1,4 @@
+#Tue Feb 24 17:59:00 CST 2015
+eclipse.preferences.version=1
+validator.Checked=WebRoot/js/angular-1.2.2/angular.min.js,WebRoot/js/angular-1.2.2/docs/components/jquery.min.js,WebRoot/js/jquery-1.11.2.min.js
+validator.Unchecked=

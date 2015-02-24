@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>My HTML File</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+
+<div ng-app="myApp" ng-controller="firstController">
+	{{name}}
+</div>
+
+<script src="js/angular-1.2.2/angular.min.js"></script>
+
+<script>
+	//module()方法的第三个参数是用于模块配置的函数
+	var myApp = angular.module("myApp",[],function($provide){
+		//自定义服务
+		$provide.provider('CustomService',function(){
+			this.$get=function(){
+				return {message:'CustomService message'};
+			}
+		});
+
+		$provide.provider('CustomService2',function(){
+			this.$get=function(){
+				return {message:'CustomService2 message'};
+			}
+		});
+	});
+
+	myApp.controller("firstController", function($scope,CustomService,CustomService2){
+		$scope.name="张三";
+		console.log(CustomService);
+		console.log(CustomService2);
+	})
+</script>
+</body>
+</html>

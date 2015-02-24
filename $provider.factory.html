@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>My HTML File</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+
+<div ng-app="myApp" ng-controller="firstController">
+	{{name}}
+</div>
+
+<script src="js/angular-1.2.2/angular.min.js"></script>
+
+<script>
+	//module()方法的第三个参数是用于模块配置的函数
+	var myApp = angular.module("myApp",[],function($provide){
+		//自定义服务
+		$provide.provider('CustomService',function(){
+			this.$get=function(){
+				return {message:'CustomService message'};
+			}
+		});
+
+		//自定义工厂
+		$provide.factory('CustomFactory',function(){//这里的function就直接对应前面$get的function了，简化了
+			return [1,2,3];//这里可以返回字符串
+		});
+
+		//简化的自定义服务
+		//但是返回的必须是对象，连字符串都不行
+		$provide.service('CustomService2',function(){//这里的function就直接对应前面$get的function了，简化了
+			return ['北京','上海'];//返回 return 'aaa';是错误的
+		});
+	});
+
+	myApp.controller("firstController", function($scope,CustomService,CustomFactory,CustomService2){
+		$scope.name="张三";
+		console.log(CustomService);
+		console.log(CustomFactory);
+		console.log(CustomService2);
+	})
+</script>
+</body>
+</html>
