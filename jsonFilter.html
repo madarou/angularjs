@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>My HTML File</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+
+<div ng-app="myApp" ng-controller="firstController">
+	{{Data.city|filter:'上海'}}<br>
+	{{Data.city|filter:'s'}}<br>
+	<!-- {{Data.city|filter:{py:'s'}}}-->
+
+	<!-- 自定义filter方法 -->
+	{{Data.city|filter: checkName}}<br>
+</div>
+
+<script src="js/angular-1.2.2/angular.min.js"></script>
+
+<script>
+	var myApp = angular.module("myApp",[])
+	.factory('Data',function(){
+		return {city:[
+				{name:'上海',
+				py:'Shanghai'},
+				{name:'北京',
+				py:'Beijing'},
+				{name:'四川',
+				py:'Sichuan'}
+			]};
+	})
+	.controller("firstController", function($scope,Data,$filter){
+		$scope.Data=Data;
+		console.log($filter('json')(Data));//这样用于调试时能更清晰地看Data的内容，比下面一种直观，所以经常用于调试
+		console.log(Data);
+		
+		//自定义filter方法，过滤出py含h的
+		$scope.checkName = function(obj)
+		{
+			if(obj.py.indexOf('h')===-1)
+			{
+				return false;
+			}
+			return true;
+		}
+	})
+</script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>My HTML File</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style type="text/css">
+    	.orderColor{
+    		color:red;
+    	}
+    </style>
+</head>
+<body>
+
+<div ng-app="product">
+	
+	<div class="container" ng-controller="productController">
+		<nav class="navbar navbar-default">
+		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		      <form class="navbar-form navbar-left" role="search">
+		        <div class="form-group">
+		          <input type="text" ng-model="search" class="form-control" placeholder="Search">
+		        </div>
+		      </form>
+		    </div><!-- /.navbar-collapse -->
+		</nav>
+		<table class="table">
+			<thead>
+				<tr>
+					<!-- ng-class="{cssClass:真/假}" -->
+					<th ng-click="changeOrder('id')" ng-class="{dropup:order===''}">
+						产品编号
+						<span ng-class="{orderColor:orderType==='id'}" class="caret"></span>
+					</th>
+					<th ng-click="changeOrder('name')" ng-class="{dropup:order===''}">
+						产品名称
+						<span ng-class="{orderColor:orderType==='name'}" class="caret"></span>
+					</th>
+					<th ng-click="changeOrder('price')" ng-class="{dropup:order===''}">
+						产品价格
+						<span ng-class="{orderColor:orderType==='price'}" class="caret"></span>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- 如果只搜id字段，可写成:<tr ng-repeat="product in productData | filter:{id:search}"> -->
+				<tr ng-repeat="product in productData | filter:search | orderBy:order+orderType">
+					<td>{{product.id}}</td>
+					<td>{{product.name}}</td>
+					<td>{{product.price|currency:"￥"}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<script src="js/angular-1.2.2/angular.min.js"></script>
+
+<script>
+	var myApp = angular.module("product",[])
+	.service('productData',function(){
+		return [
+			{id:111,
+			name:'iphone',
+			price:5400},
+			{id:222,
+			name:'ipad',
+			price:2400},
+			{id:333,
+			name:'imac',
+			price:7400},
+			{id:444,
+			name:'Macbook',
+			price:6000}
+		];
+	})
+	.controller("productController",function($scope,productData){
+		$scope.productData=productData;
+
+		$scope.orderType="id";
+		$scope.order='-';
+
+		$scope.changeOrder = function(type){
+			$scope.orderType=type;
+			if($scope.order==='')
+			{
+				$scope.order='-';
+			}else{
+				$scope.order='';
+			}
+		}
+	});
+</script>
+</body>
+</html>

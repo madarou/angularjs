@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>My HTML File</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+
+<div ng-app="myApp">
+	<div ng-controller="firstController">
+		
+	</div>
+
+	<div ng-controller="secondController">
+		
+	</div>
+
+	<div ng-controller="otherController">
+
+	</div>
+</div>
+
+<script src="js/angular-1.2.2/angular.min.js"></script>
+
+<script>
+	var myApp = angular.module("myApp",[])
+
+	//隐士的依赖注入
+	.controller('firstController',function($scope){
+
+	})
+
+	//显式的依赖注入,防止js上线压缩时,function参数中的$scope名字变了后隐式注入就失败了
+	.controller('secondController',['$scope','$filter',function($scope,$filter){
+
+	}]);
+
+	//手动为controller注入依赖，并且为显式
+	function otherController(a){
+		console.log(a);
+	}
+	otherController.$inject = ['$scope'];
+</script>
+</body>
+</html>

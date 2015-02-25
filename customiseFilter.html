@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>My HTML File</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+
+<div ng-app="myApp">
+	<div ng-controller="firstController">
+		filterAge:
+		<ul>
+			<li ng-repeat="user in Data | filterAge">
+				{{user.name}}
+				{{user.age}}
+				{{user.city}}
+			</li>
+		</ul>
+		filterCity:
+		<ul>
+			<li ng-repeat="user in Data | filterCity">
+				{{user.name}}
+				{{user.age}}
+				{{user.city}}
+			</li>
+		</ul>
+	</div>
+</div>
+
+<script src="js/angular-1.2.2/angular.min.js"></script>
+
+<script>
+	var myApp = angular.module("myApp",[],function($provide,$filterProvider,$controllerProvider){
+		$provide.service('Data',function(){//先用service方法提供后面要用的数据Data
+			return [
+				{
+					name:'张三',
+					age:20,
+					city:'上海'
+				},
+				{
+					name:'李四',
+					age:22,
+					city:'北京'
+				},
+				{
+					name:'王五',
+					age:24,
+					city:'成都'
+				},
+				{
+					name:'赵云',
+					age:33,
+					city:'常山'
+				}
+			];
+		});
+
+		//注册一个控制器,等同于myApp.controller('',function)
+		$controllerProvider.register('firstController',function($scope,Data){
+			$scope.Data=Data;
+		});
+
+		//注册一个自定义的过滤器(写法1)
+		$filterProvider.register('filterAge',function(){
+			//这里面必须要返回一个function
+			return function(obj){
+				//console.log(obj);
+				var newObj = [];//筛选后的数组
+
+				angular.forEach(obj,function(item){
+					if(item.age>=30)
+					{
+						newObj.push(item);//筛选年龄大于30岁的
+					}
+				}) 
+
+				return newObj;//最后把筛选后的内容返回
+			};
+
+		});
+	});
+
+	//注册一个自定义的过滤器(写法2),这种写法更加简单
+	myApp.filter('filterCity',function(){
+		//也是要返回一个function
+		return function(obj){
+			var newObj = [];//筛选后的数组
+
+			angular.forEach(obj,function(item){
+				if(item.city==='上海')
+				{
+					newObj.push(item);//筛选上海的
+				}
+			}) 
+
+			return newObj;//最后把筛选后的内容返回
+		}
+	});
+</script>
+</body>
+</html>

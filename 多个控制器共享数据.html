@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>My HTML File</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+
+<div ng-app="myApp">
+	<div ng-controller="firstController">
+		<input type="text" ng-model="name"/>
+		<p>
+		  first: {{name}}
+		</p>
+		<input type="text" ng-model="data.name"/>
+		<p>
+		  first: {{data.name}}
+		</p>
+	</div>
+
+	<div ng-controller="secondController">
+		<p>
+		  second(非对象，只是简单的数据类型时，$$prevSibling指向来的值不会变): {{name}}
+		</p>
+		<p>
+		  second($$prevSibling指向的共享数据为对象时，共享的值会跟着变): {{data.name}}
+		</p>
+	</div>
+
+	<div ng-controller="thirdController">
+		<input type="text" ng-model="Data.content"/>
+		<p>
+		  third: {{Data.content}}
+		</p>
+	</div>
+	<div ng-controller="forthController">
+		<p>
+		  forth(使用factory共享): {{Data.content}}
+		</p>
+	</div>
+</div>
+<script src="js/angular-1.2.2/angular.min.js"></script>
+
+<script>
+	var myApp = angular.module("myApp",[])
+
+	.controller("firstController", function($scope){
+		$scope.name="张三";
+		$scope.data={name:"data的张三"};
+		//console.log($scope);
+	})
+
+	.controller("secondController", function($scope){
+		$scope.name=$scope.$$prevSibling.name;
+		$scope.data=$scope.$$prevSibling.data;
+	});
+	//这里是另一种共享传值的方法，使用factory
+	myApp.factory("SharedData", function(){
+		return {content:'Shared Message'};
+	})
+	.controller("thirdController",function($scope, SharedData){
+		$scope.Data=SharedData;
+	})
+	.controller("forthController",function($scope, SharedData){
+		$scope.Data=SharedData;
+	});
+</script>
+</body>
+</html>
