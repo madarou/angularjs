@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>My HTML File</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+
+<div ng-app="myApp">
+	<div ng-controller="firstController">
+		<div ng-repeat="user in users" custom-tag custom-tag2>
+		</div>
+	</div>
+</div>
+
+<script src="js/angular-1.2.2/angular.min.js"></script>
+
+<script>
+	var myApp = angular.module('myApp',[])
+	.directive('customTag',function(){
+		return {
+			restrict:'ECAM',
+			template:'<div>{{user.name}}</div>',
+			replace:true,
+			compile:function(tElement,tAttrs,translude){
+				//编译阶段
+				console.log('customTag compile 编译阶段...');
+				//要改变页面的DOM结构，就在compile里来做，因为这是在DOM渲染前调用的
+				//比如这里在customTag所在的这个eElement元素中使用append方法插入一个div
+				tElement.append(angular.element('<div>在compile阶段插入来的内容</div>'));
+
+				return {
+					//表示在编译阶段之后，指令连接到子元素之前
+					pre:function preLink(){
+						console.log('customTag preLink阶段...');
+					},
+					//所有子元素都连接之后才运行
+					post:function postLink(scope,iElement,iAttrs,controller){
+						console.log('customTag postLink阶段...')
+						//为指令绑定事件通常就在postLink中来做,或在link中做
+						iElement.on('click',function(){
+							//使用apply做一次脏检查
+							scope.$apply(function(){
+								scope.user.name='name被在link阶段绑定的事件所改变了';
+							});
+						})
+
+					}
+				};
+
+				//可以直接返回postLink
+				// return postLink function(){
+				// 	console.log('customTag postLink阶段...');
+				// }
+			},
+			link:function(){
+				//这个link就表示postLink，前面compile定义了这里就不执行了，所有通常不写
+			}
+		};
+	})
+	.directive('customTag2',function(){
+		return {
+			restrict:'ECAM',
+			//template:'<div>bbb</div>',//多个指令只能有一个有template
+			replace:true,
+			compile:function(tElement,tAttrs,translude){
+				//编译阶段
+				console.log('customTag2 compile 编译阶段...');
+
+				return {
+					//表示在编译阶段之后，指令连接到子元素之前
+					pre:function preLink(){
+						console.log('customTag2 preLink阶段...');
+					},
+					//所有子元素都连接之后才运行
+					post:function postLink(){
+						console.log('customTag2 postLink阶段...')
+					}
+				};
+
+				//可以直接返回postLink
+				// return postLink function(){
+				// 	console.log('customTag postLink阶段...');
+				// }
+			},
+			link:function(){
+				//这个link就表示postLink，前面compile定义了这里就不执行了，所有通常不写
+			}
+		};
+	})
+
+	.controller('firstController',['$scope',function($scope){
+		$scope.users=[
+			{
+				id:10,
+				name:'张三'
+			},
+			{
+				id:20,
+				name:'李四'
+			}
+		];
+	}]);
+</script>
+</body>
+</html>

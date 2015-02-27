@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>My HTML File</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+
+<div ng-app="myApp">
+	<div ng-controller="firstController">
+		<div book-list>
+		</div>
+	</div>
+</div>
+
+<script src="js/angular-1.2.2/angular.min.js"></script>
+
+<script>
+	var myApp = angular.module('myApp',[])
+	.directive('bookList',function(){
+		return {
+			restrict:'ECAM',
+			controller:function($scope){
+				$scope.books=[
+					{
+						name:'angularjs'
+					},
+					{
+						name:'jQuery'
+					},
+					{
+						name:'java'
+					},
+					{
+						name:'php'
+					}
+				];
+				this.addBook = function(){
+					//这样并没有脏检查,所以只是model层改了，而view层没变
+					//$scope.books.push({name:'Spring'});
+					//要主动触发脏检查
+					$scope.$apply(function(){
+						$scope.books.push({name:'Spring'});
+					})
+					
+				}
+			},
+			controllerAs:'bookListController',
+			template:'<div><ul><li ng-repeat="book in books">{{book.name}}</li></ul><book-add></book-add></div>',
+			replace:true
+		};
+	})
+	.directive('bookAdd',function(){
+		return {
+			restrict:'ECAM',
+			require:'^bookList',//往父元素里找
+			template:'<button type="button">添加</button>',
+			replace:true,
+			link:function(scope,iElement,iAttrs,bookListController){
+				iElement.on('click',bookListController.addBook);
+			}
+		};
+	})
+
+	.controller('firstController',['$scope',function($scope){
+		
+	}]);
+</script>
+</body>
+</html>

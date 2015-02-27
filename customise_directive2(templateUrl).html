@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>My HTML File</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+
+<div ng-app="myApp">
+	<div ng-controller="firstController">
+		<!-- customtag标签里面的内容123会被template里的内容覆盖掉 -->
+		<custom-tag2>123</custom-tag2>
+	</div>
+</div>
+
+<script src="js/angular-1.2.2/angular.min.js"></script>
+
+<script>
+	var myApp = angular.module('myApp',[],['$compileProvider',function($compileProvider){
+		//自定义指令的方法1
+		$compileProvider.directive('customTag', function(){
+			return {
+				restrict:'ECAM',//E是作为元素的标签名,C是作为类名，A是属性名，M是注释
+				template:'<span>customTag的内容</span>',//如果下面的replace为true,这里的templete的内容必须包含在HTML的标签中
+				replace:true//替换指令所在的元素，即将<custom-tag></custom-tag>在网页源码中替换掉
+			}
+		})
+	}])
+	
+	//自定义指令的方法2
+	.directive('customTag2',function(){
+		return {
+				restrict:'ECAM',//E是作为元素的标签名,C是作为类名，A是属性名，M是注释
+				templateUrl:'customise_directive2_template.html',//如果下面的replace为true,这里的templete的内容必须包含在HTML的标签中
+				replace:true//替换指令所在的元素，即将<custom-tag></custom-tag>在网页源码中替换掉
+			}
+	})
+	//在templateUrl的页面中也可以使用controller的scope中的内容
+	.controller('firstController',['$scope',function($scope){
+		$scope.name='张三';
+	}])
+
+</script>
+</body>
+</html>
