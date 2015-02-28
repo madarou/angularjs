@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>My HTML File</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+
+<div ng-app="myApp">
+	<div class="container">
+		<div ng-controller="firstController">
+		<kittencup-group>
+			<kittencup-collapse ng-repeat="collapse in data" heading="{{collapse.title}}">
+				{{collapse.content}}
+			</kittencup-group>
+		</kittencup-group>
+	</div>
+	</div>
+</div>
+
+<script src="js/angular-1.2.2/angular.min.js"></script>
+
+<script>
+	var myApp = angular.module('myApp',[])
+	//数据准备
+	.factory('Data',function(){
+		return [
+			{
+				title:'no1',
+				content:'no1-content'
+			},
+			{
+				title:'no2',
+				content:'no2-content'
+			},
+			{
+				title:'no3',
+				content:'no3-content'
+			}
+		];
+	})
+	.controller('firstController',['$scope','Data',function($scope,Data){
+		$scope.data=Data;
+	}])
+
+	.directive('kittencupGroup',function(){
+		return {
+			restrict:'E',
+			replace:true,
+			template:'<div class="panel-group" ng-transclude></div>',
+			//要把collapse指令的内容transclude到里面
+			transclude:true,
+			controller:function(){
+				this.groups=[];
+
+				this.closeOther=function(newScope){
+					angular.forEach(this.groups,function(scope){
+						if(scope!==newScope)
+							scope.isOpen=false;
+					})
+				}
+			},
+			controllerAs:'kittencupGroupCtrl'
+		}
+	})
+	.directive('kittencupCollapse',function(){
+		return {
+			restrict:'E',
+			replace:true,
+			templateUrl:'customise_directive5_kittencupCollapse.html',
+			scope:{
+				heading:'@'
+			},
+			transclude:true,
+			//这种写法各个内部的collapse里的内容是独立的，即一个开了并不影响别的collapse关上
+			// link:function(scope){
+			// 	scope.isOpen=true;
+			// 	scope.changeOpen=function(){
+			// 		scope.isOpen=!scope.isOpen;
+			// 	}
+			// }
+			require:'^kittencupGroup',
+			link:function(scope,element,attrs,kittencupGroupCtrl){
+				scope.isOpen=false;
+				scope.changeOpen=function(){
+					scope.isOpen=!scope.isOpen;
+					kittencupGroupCtrl.closeOther(scope);
+				};
+				//即用这种方法将子scope加入到父指令中，并通过父指令定义函数来整体控制全局，
+				//而各自的功能如changeOpen则在各自link方法中实现
+				kittencupGroupCtrl.groups.push(scope);
+			}
+		}
+	})
+</script>
+</body>
+</html>
