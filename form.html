@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>My HTML File</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+
+<div ng-app="myApp">
+	<form name="myForm" ng-controller="firstController" class="container form-horizontal">
+		<div class="form-group" ng-class="{'has-error':myForm.username.$invalid && myForm.username.$dirty}">
+			<label class="col-sm-2 control-label">用户名</label>
+			<div class="col-sm-10">
+				<input type="text" autocomplete="off" name="username" ng-pattern="/^[a-zA-Z]{1}/" ng-required="true" ng-model="data.username" ng-minlength="5" ng-maxlength="10" class="form-control" placeholder="用户名">
+				<div class="alert alert-danger help-block" ng-show="myForm.username.$error.maxlength">
+					用户名长度不能超过10位
+				</div>
+				<div class="alert alert-danger help-block" ng-show="myForm.username.$error.minlength">
+					用户名长度不能小于5位
+				</div>
+				<div class="alert alert-danger help-block" ng-show="myForm.username.$error.pattern">
+					用户名必须以英文字母开头
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group" ng-class="{'has-error':myForm.password.$invalid && myForm.password.$dirty}">
+			<label class="col-sm-2 control-label">密 码</label>
+			<div class="col-sm-10">
+				<input type="password" autocomplete="off" name="password" ng-required="true" ng-model="data.password" ng-minlength="5" ng-maxlength="20" class="form-control" placeholder="密码">
+				<div class="alert alert-danger help-block" ng-show="myForm.password.$error.maxlength">
+					密码长度不能超过20位
+				</div>
+				<div class="alert alert-danger help-block" ng-show="myForm.password.$error.minlength">
+					密码长度不能小于5位
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group" ng-class="{'has-error':myForm.passwordConfirm.$invalid && myForm.passwordConfirm.$dirty}">
+			<label class="col-sm-2 control-label">确认密码</label>
+			<div class="col-sm-10">
+				<input type="password" autocomplete="off" name="passwordConfirm" ng-required="true" ng-model="data.passwordConfirm" class="form-control" placeholder="确认密码">
+				<div class="alert alert-danger help-block" ng-show="myForm.password.$dirty && myForm.passwordConfirm.$dirty && data.password!==data.passwordConfirm">
+					两次密码不一致
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group" ng-class="{'has-error':myForm.email.$invalid && myForm.email.$dirty}">
+			<label class="col-sm-2 control-label">邮 箱</label>
+			<div class="col-sm-10">
+				<input type="email" autocomplete="off" name="email" ng-required="true" ng-model="data.email" class="form-control" placeholder="邮箱">
+				<div class="alert alert-danger help-block" ng-show="myForm.email.$error.email">
+					邮箱格式不正确
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group" ng-class="{'has-error':myForm.blog.$invalid && myForm.blog.$dirty}">
+			<label class="col-sm-2 control-label">博客网址</label>
+			<div class="col-sm-10">
+				<input type="url" autocomplete="off" name="blog" ng-required="true" ng-model="data.blog" class="form-control" placeholder="博客网址">
+				<div class="alert alert-danger help-block" ng-show="myForm.blog.$error.url">
+					网址格式不正确(http://)
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group" ng-class="{'has-error':myForm.age.$invalid && myForm.age.$dirty}">
+			<label class="col-sm-2 control-label">年 龄</label>
+			<div class="col-sm-10">
+				<input type="number" autocomplete="off" name="age" min="1" max="120" ng-required="true" ng-model="data.age" class="form-control" placeholder="年龄">
+				<div class="alert alert-danger help-block" ng-show="myForm.age.$error.min">
+					年龄不能小于1
+				</div>
+				<div class="alert alert-danger help-block" ng-show="myForm.age.$error.max">
+					年龄不能大于120
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-2 control-label">性 别</label>
+			<div class="col-sm-10">
+				<label class="radio-inline">
+					<input type="radio" name="sex" ng-model="data.sex" value="1">男
+				</label>
+				<label class="radio-inline">
+					<input type="radio" name="sex" ng-model="data.sex" value="0">女
+				</label>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-2 control-label">爱 好</label>
+			<div class="col-sm-10">
+				<label class="checkbox-inline" ng-repeat="hobby in hobbies">
+					<input type="checkbox" name="hobby[]" value="{{hobby.id}}" ng-checked="data.hobbies.indexOf(hobby.id)!==-1" ng-click="toggleHobbySelection(hobby.id)">{{hobby.name}}
+				</label>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-2 control-label">出生地</label>
+			<div class="col-sm-3">
+				<select class="form-control" ng-change="data.city=false" ng-model="data.province" ng-options="x.id as x.name for x in cities | cityFilter:0"></select>
+			</div>
+			<div class="col-sm-3">
+				<select class="form-control" ng-show="data.province" ng-model="data.city" ng-options="x.id as x.name for x in cities | cityFilter:data.province"></select>
+			</div>
+			<div class="col-sm-3">
+				<select class="form-control" ng-show="data.province && data.city" ng-model="data.area" ng-options="x.id as x.name for x in cities | cityFilter:data.city"></select>
+			</div>
+		</div>
+	</form>
+</div>
+
+<script src="js/angular-1.2.2/angular.min.js"></script>
+
+<script>
+	var myApp = angular.module('myApp',[])
+
+	.controller('firstController',['$scope',function($scope){
+		$scope.hobbies=[
+			{
+				id:1,
+				name:'玩游戏'
+			},
+			{
+				id:2,
+				name:'写代码'
+			},
+			{
+				id:3,
+				name:'睡觉'
+			}
+		];
+
+		$scope.data={
+			hobbies:[1,2],//后台传来的默认值,被勾上的爱好
+			area:4//默认选中了长宁区
+		};
+
+		//处理checkbox的选中与取消
+		$scope.toggleHobbySelection=function(id){
+			var index = $scope.data.hobbies.indexOf(id);//查被点击的checkbox是否在hobbies中
+			if(index===-1)//如果找不到，则把这个插入到hobbies中，表示被勾上的
+			{
+				$scope.data.hobbies.push(id);
+			}else{
+				//如果找得到，说明它已被勾选，此时应取消勾选
+				$scope.data.hobbies.splice(index,1);
+			}
+		};
+
+		$scope.cities=[
+			{
+				name:'上海',
+				parent:0,
+				id:1
+			},
+			{
+				name:'北京',
+				parent:0,
+				id:2
+			},
+			{
+				name:'上海市',
+				parent:1,
+				id:3
+			},
+			{
+				name:'徐汇区',
+				parent:3,
+				id:4
+			},
+			{
+				name:'浦东区',
+				parent:3,
+				id:5
+			},
+			{
+				name:'北京市',
+				parent:2,
+				id:6
+			},
+			{
+				name:'宣武区',
+				parent:6,
+				id:7
+			},
+			{
+				name:'丰台区',
+				parent:6,
+				id:8
+			}
+		];
+	}])
+	//定义一个filter来根据parent过滤省市和区
+	.filter('cityFilter',function(){
+		return function(data,parent){
+			var filterData=[];
+			angular.forEach(data,function(obj){
+				if(obj.parent===parent)
+				{
+					filterData.push(obj);
+					//forEach中的return相当于break
+				}
+			});
+			return filterData;
+		}
+	})
+</script>
+</body>
+</html>
