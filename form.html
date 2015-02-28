@@ -2,26 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>My HTML File</title>
+    <title>Form表单</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 <body>
 
 <div ng-app="myApp">
-	<form name="myForm" ng-controller="firstController" class="container form-horizontal">
+	<form name="myForm" action="register" ng-controller="firstController" class="container form-horizontal">
 		<div class="form-group" ng-class="{'has-error':myForm.username.$invalid && myForm.username.$dirty}">
 			<label class="col-sm-2 control-label">用户名</label>
 			<div class="col-sm-10">
-				<input type="text" autocomplete="off" name="username" ng-pattern="/^[a-zA-Z]{1}/" ng-required="true" ng-model="data.username" ng-minlength="5" ng-maxlength="10" class="form-control" placeholder="用户名">
-				<div class="alert alert-danger help-block" ng-show="myForm.username.$error.maxlength">
+				<input type="text" autocomplete="off" name="username" ng-pattern="/^[a-zA-Z]{1}/" ng-required="true" ng-model="data.username" ng-minlength="5" ng-maxlength="10" class="form-control" placeholder="用户名" check-unique>
+				<div class="alert alert-danger help-block" ng-show="myForm.username.$error.maxlength && myForm.username.$dirty">
 					用户名长度不能超过10位
 				</div>
-				<div class="alert alert-danger help-block" ng-show="myForm.username.$error.minlength">
+				<div class="alert alert-danger help-block" ng-show="myForm.username.$error.minlength && myForm.username.$dirty">
 					用户名长度不能小于5位
 				</div>
-				<div class="alert alert-danger help-block" ng-show="myForm.username.$error.pattern">
+				<div class="alert alert-danger help-block" ng-show="myForm.username.$error.pattern && myForm.username.$dirty">
 					用户名必须以英文字母开头
 				</div>
+				<div class="alert alert-danger help-block" ng-show="myForm.username.$error.alreadyHave && myForm.username.$dirty">
+					用户名已被注册
+				</div>
+
 			</div>
 		</div>
 
@@ -29,10 +33,10 @@
 			<label class="col-sm-2 control-label">密 码</label>
 			<div class="col-sm-10">
 				<input type="password" autocomplete="off" name="password" ng-required="true" ng-model="data.password" ng-minlength="5" ng-maxlength="20" class="form-control" placeholder="密码">
-				<div class="alert alert-danger help-block" ng-show="myForm.password.$error.maxlength">
+				<div class="alert alert-danger help-block" ng-show="myForm.password.$error.maxlength && myForm.password.$dirty">
 					密码长度不能超过20位
 				</div>
-				<div class="alert alert-danger help-block" ng-show="myForm.password.$error.minlength">
+				<div class="alert alert-danger help-block" ng-show="myForm.password.$error.minlength && myForm.password.$dirty">
 					密码长度不能小于5位
 				</div>
 			</div>
@@ -52,7 +56,7 @@
 			<label class="col-sm-2 control-label">邮 箱</label>
 			<div class="col-sm-10">
 				<input type="email" autocomplete="off" name="email" ng-required="true" ng-model="data.email" class="form-control" placeholder="邮箱">
-				<div class="alert alert-danger help-block" ng-show="myForm.email.$error.email">
+				<div class="alert alert-danger help-block" ng-show="myForm.email.$error.email && myForm.email.$dirty">
 					邮箱格式不正确
 				</div>
 			</div>
@@ -62,7 +66,7 @@
 			<label class="col-sm-2 control-label">博客网址</label>
 			<div class="col-sm-10">
 				<input type="url" autocomplete="off" name="blog" ng-required="true" ng-model="data.blog" class="form-control" placeholder="博客网址">
-				<div class="alert alert-danger help-block" ng-show="myForm.blog.$error.url">
+				<div class="alert alert-danger help-block" ng-show="myForm.blog.$error.url && myForm.blog.$dirty">
 					网址格式不正确(http://)
 				</div>
 			</div>
@@ -72,10 +76,10 @@
 			<label class="col-sm-2 control-label">年 龄</label>
 			<div class="col-sm-10">
 				<input type="number" autocomplete="off" name="age" min="1" max="120" ng-required="true" ng-model="data.age" class="form-control" placeholder="年龄">
-				<div class="alert alert-danger help-block" ng-show="myForm.age.$error.min">
+				<div class="alert alert-danger help-block" ng-show="myForm.age.$error.min && myForm.age.$dirty">
 					年龄不能小于1
 				</div>
-				<div class="alert alert-danger help-block" ng-show="myForm.age.$error.max">
+				<div class="alert alert-danger help-block" ng-show="myForm.age.$error.max && myForm.age.$dirty">
 					年龄不能大于120
 				</div>
 			</div>
@@ -85,10 +89,13 @@
 			<label class="col-sm-2 control-label">性 别</label>
 			<div class="col-sm-10">
 				<label class="radio-inline">
-					<input type="radio" name="sex" ng-model="data.sex" value="1">男
+					<input type="radio" ng-checked="data.sex===1" name="sex" ng-model="data.sex" value="1">男
 				</label>
 				<label class="radio-inline">
-					<input type="radio" name="sex" ng-model="data.sex" value="0">女
+					<input type="radio" ng-checked="data.sex===0" name="sex" ng-model="data.sex" value="0">女
+				</label>
+				<label class="radio-inline">
+					<input type="radio" ng-checked="data.sex===-1" name="sex" ng-model="data.sex" value="-1">保密
 				</label>
 			</div>
 		</div>
@@ -97,7 +104,7 @@
 			<label class="col-sm-2 control-label">爱 好</label>
 			<div class="col-sm-10">
 				<label class="checkbox-inline" ng-repeat="hobby in hobbies">
-					<input type="checkbox" name="hobby[]" value="{{hobby.id}}" ng-checked="data.hobbies.indexOf(hobby.id)!==-1" ng-click="toggleHobbySelection(hobby.id)">{{hobby.name}}
+					<input type="checkbox" name="hobby[]" value="{{hobby.id}}" ng-checked="data.hobbies === undefined ? false : data.hobbies.indexOf(hobby.id)!==-1" ng-click="toggleHobbySelection(hobby.id)">{{hobby.name}}
 				</label>
 			</div>
 		</div>
@@ -114,6 +121,13 @@
 				<select class="form-control" ng-show="data.province && data.city" ng-model="data.area" ng-options="x.id as x.name for x in cities | cityFilter:data.city"></select>
 			</div>
 		</div>
+
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<button type="submit" class="btn btn-primary" ng-disabled="myForm.$invalid">提交</button>
+				<button type="reset" class="btn btn-default" ng-click="reset()">重置</button>
+			</div>
+		</div>
 	</form>
 </div>
 
@@ -121,7 +135,6 @@
 
 <script>
 	var myApp = angular.module('myApp',[])
-
 	.controller('firstController',['$scope',function($scope){
 		$scope.hobbies=[
 			{
@@ -139,13 +152,20 @@
 		];
 
 		$scope.data={
+			sex:-1,//默认性别为保密
 			hobbies:[1,2],//后台传来的默认值,被勾上的爱好
 			area:4//默认选中了长宁区
 		};
-
+		//克隆一份model层的原始默认值，以便reset重置方法调用，HTML的reset只是清空表单的内容，并没有对model层的数据reset，所以要在后面自定义reset()方法
+		$scope.origData = angular.copy($scope.data);
 		//处理checkbox的选中与取消
 		$scope.toggleHobbySelection=function(id){
-			var index = $scope.data.hobbies.indexOf(id);//查被点击的checkbox是否在hobbies中
+			var index = -1;
+			if($scope.data.hobbies === undefined){
+				$scope.data.hobbies = [];
+			}else{
+				index = $scope.data.hobbies.indexOf(id);//查被点击的checkbox是否在hobbies中
+			}
 			if(index===-1)//如果找不到，则把这个插入到hobbies中，表示被勾上的
 			{
 				$scope.data.hobbies.push(id);
@@ -154,7 +174,6 @@
 				$scope.data.hobbies.splice(index,1);
 			}
 		};
-
 		$scope.cities=[
 			{
 				name:'上海',
@@ -197,6 +216,43 @@
 				id:8
 			}
 		];
+
+		//让城市关联起来使用
+		//如知道area的id号，可以确定其市和省
+		$scope.findParentid = function(id){
+			var parentid;
+			angular.forEach($scope.cities,function(current){
+				if(current.id===id)
+				{
+					parentid=current.parent;
+					return;
+				}
+			});
+			return parentid;
+		}
+
+		//开始从后台已经有值传过来，处理下拉框的默认选中
+		if($scope.data.area !== undefined)
+		{
+			$scope.data.city = $scope.findParentid($scope.data.area);
+			$scope.data.province = $scope.findParentid($scope.data.city);
+		}
+
+		//重置时，恢复model层的原始默认数据
+		$scope.reset = function(){
+			$scope.data = angular.copy($scope.origData);
+			//setPristine()方法会将表单的class，$dirty和$pristine恢复到原始状态，但$error不会被清除掉，
+			//即重置后之前提示错误的信息还会在,所以在错误提示的div的show里可以加入$dirty条件解决
+			$scope.myForm.$setPristine();
+
+			//处理下拉框的默认选中
+			if($scope.data.area !== undefined)
+			{
+				$scope.data.city = $scope.findParentid($scope.data.area);
+				$scope.data.province = $scope.findParentid($scope.data.city);
+			}
+		}
+
 	}])
 	//定义一个filter来根据parent过滤省市和区
 	.filter('cityFilter',function(){
@@ -210,6 +266,42 @@
 				}
 			});
 			return filterData;
+		}
+	})
+	//自定义一个指令验证，来验证用户名是否存在
+	.directive('checkUnique',function(){
+		return {
+			restrict:'A',
+			require:'ngModel',
+			replace:true,
+			link:function(scope,elm,attrs,ngModelController){
+				elm.on('blur',function(){
+					//当用户名框失去焦点时，后台验证用户名是否重复
+					//console.log(scope.data.username);
+					scope.$apply(function(){
+						ngModelController.$setViewValue(elm.val());
+						ngModelController.$setValidity('alreadyHave', false);
+						console.log('失去焦点时'+scope.myForm.username.$error.alreadyHave);
+						if(elm.val()=='makao')
+						{
+							ngModelController.$setValidity('alreadyHave', true);
+							console.log('等于makao时'+scope.myForm.username.$error.alreadyHave);
+						}
+						//console.log(elm.val());
+					});
+					
+				});
+				elm.on('focus',function(){
+					//当用户名框获得焦点时，设置alreadyHave为false
+					scope.$apply(function(){
+						ngModelController.$setValidity('alreadyHave', false);
+						console.log('获得焦点时'+scope.myForm.username.$error.alreadyHave);
+					});
+				});
+				ngModelController.$render=function(){
+
+				}
+			}
 		}
 	})
 </script>
