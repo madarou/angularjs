@@ -22,7 +22,7 @@
 				<div class="alert alert-danger help-block" ng-show="myForm.username.$error.pattern && myForm.username.$dirty">
 					用户名必须以英文字母开头
 				</div>
-				<div class="alert alert-danger help-block" ng-show="myForm.username.$error.alreadyHave && myForm.username.$dirty">
+				<div class="alert alert-danger help-block" ng-show="myForm.username.$error.canUse && myForm.username.$dirty">
 					用户名已被注册
 				</div>
 
@@ -275,32 +275,19 @@
 			require:'ngModel',
 			replace:true,
 			link:function(scope,elm,attrs,ngModelController){
-				elm.on('blur',function(){
-					//当用户名框失去焦点时，后台验证用户名是否重复
-					//console.log(scope.data.username);
+				elm.on('blur',function(evt){
 					scope.$apply(function(){
-						ngModelController.$setViewValue(elm.val());
-						ngModelController.$setValidity('alreadyHave', false);
-						console.log('失去焦点时'+scope.myForm.username.$error.alreadyHave);
-						if(elm.val()=='makao')
+						if(ngModelController.$viewValue!=="makao")
 						{
-							ngModelController.$setValidity('alreadyHave', true);
-							console.log('等于makao时'+scope.myForm.username.$error.alreadyHave);
+							//这里有点奇怪，是反过来的
+							ngModelController.$setValidity('canUse',true);
+						}else{
+							ngModelController.$setValidity('canUse',false);
 						}
-						//console.log(elm.val());
 					});
-					
+				}).on('focus',function(){
+					ngModelController.$setValidity('canUse',true);//用户在输入时，不显示错误，失去焦点再显示
 				});
-				elm.on('focus',function(){
-					//当用户名框获得焦点时，设置alreadyHave为false
-					scope.$apply(function(){
-						ngModelController.$setValidity('alreadyHave', false);
-						console.log('获得焦点时'+scope.myForm.username.$error.alreadyHave);
-					});
-				});
-				ngModelController.$render=function(){
-
-				}
 			}
 		}
 	})
